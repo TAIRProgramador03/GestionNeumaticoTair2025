@@ -398,7 +398,9 @@ const ModalAsignacionNeu: React.FC<ModalAsignacionNeuProps> = ({ open, onClose, 
                 <DialogContent>
                     <Stack direction="row" spacing={2}>
                         {/* Información del Vehículo */}
-                        <Card sx={{ flex: 0.5, p: 2, position: 'relative' }}>
+
+                        <Card sx={{ flex: 0.5, p: 2, position: 'relative', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)' }}>
+
                             <Typography variant="h6" sx={{ mb: 2 }}>
                                 Información del Vehículo
                             </Typography>
@@ -481,11 +483,43 @@ const ModalAsignacionNeu: React.FC<ModalAsignacionNeuProps> = ({ open, onClose, 
                                         setAssignedNeumaticos={setAssignedNeumaticos}
                                     />
                                 </Box>
+                                <img
+                                    src="/assets/placa.png"
+                                    alt="Placa"
+                                    style={{
+                                        width: '420px',
+                                        height: '100px',
+                                        objectFit: 'contain',
+                                        position: 'absolute',
+                                        top: '670px',
+                                        left: '12px',
+                                        zIndex: 1,
+                                    }}
+                                />
+                                <Typography
+                                    variant="h6"
+                                    sx={{
+                                        position: 'absolute',
+                                        top: '700px', // Ajusta la posición según sea necesario
+                                        left: '220px', // Centra el texto horizontalmente
+                                        transform: 'translateX(-50%)', // Ajusta la posición para centrar
+                                        zIndex: 2,
+                                        color: 'black',
+                                        padding: '5px 10px',
+                                        borderRadius: '5px',
+                                        fontFamily: 'Arial, sans-serif',
+                                        fontWeight: 'bold',
+                                        fontSize: '40px',
+                                        textAlign: 'center',
+
+                                    }}>
+                                    {placa}
+                                </Typography>
                             </Box>
                         </Card>
                         {/* Neumáticos Actuales y Neumáticos Nuevos */}
                         <Stack direction="column" spacing={2} sx={{ flex: 1, width: '1px' }}>
-                            <Card sx={{ p: 2 }}>
+                            <Card sx={{ p: 2, boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)' }}>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                                     <Typography variant="h6">Neumáticos Actuales</Typography>
                                     <Button
@@ -516,10 +550,10 @@ const ModalAsignacionNeu: React.FC<ModalAsignacionNeuProps> = ({ open, onClose, 
                                             {Object.entries(assignedNeumaticos).map(([position, neumatico]) => (
                                                 <TableRow key={position}>
                                                     <TableCell>{position}</TableCell>
-                                                    <TableCell>{neumatico?.CODIGO || 'Sin asignar'}</TableCell>
-                                                    <TableCell>{neumatico?.MARCA || 'Sin asignar'}</TableCell>
-                                                    <TableCell>{neumatico?.MEDIDA || 'Sin asignar'}</TableCell>
-                                                    <TableCell>{neumatico?.FECHA_ASIGNADO || 'Sin asignar'}</TableCell>
+                                                    <TableCell>{neumatico?.CODIGO || '----'}</TableCell>
+                                                    <TableCell>{neumatico?.MARCA || '----'}</TableCell>
+                                                    <TableCell>{neumatico?.MEDIDA || '----'}</TableCell>
+                                                    <TableCell>{neumatico?.FECHA_ASIGNADO || '----'}</TableCell>
                                                     <TableCell>
                                                         {neumatico?.ESTADO === 'ASIGNADO' ? (
                                                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -527,7 +561,7 @@ const ModalAsignacionNeu: React.FC<ModalAsignacionNeuProps> = ({ open, onClose, 
                                                                 <CheckBoxIcon style={{ color: 'green' }} />
                                                             </div>
                                                         ) : (
-                                                            neumatico?.ESTADO || 'Disponible'
+                                                            neumatico?.ESTADO || '----'
                                                         )}
                                                     </TableCell>
                                                 </TableRow>

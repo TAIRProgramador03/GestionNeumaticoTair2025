@@ -249,7 +249,7 @@ export default function Page(): React.JSX.Element {
         </Stack>
       </Stack>
       <CompaniesFilters onSearchChange={handleSearchChange}
-      projectName={vehiculo?.PROYECTO || '—'} />
+        projectName={vehiculo?.PROYECTO || '—'} />
       <Stack direction="row" spacing={2}>
         <Card sx={{ flex: 1, p: 2, position: 'relative' }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
@@ -518,14 +518,15 @@ export default function Page(): React.JSX.Element {
         }}
         data={neumaticosFiltrados.map((neumatico) => ({
           ...neumatico,
-          CODIGO: neumatico.CODIGO_NEU || neumatico.CODIGO, // Usar CODIGO_NEU si existe, de lo contrario usar CODIGO
-          DISEÑO: neumatico.DISEÑO || '', // Proveer un valor por defecto si falta
-          FECHA: neumatico.FECHA || '', // Proveer un valor por defecto si falta
+          CODIGO: neumatico.CODIGO_NEU ?? neumatico.CODIGO, // Usar CODIGO_NEU si existe, de lo contrario usar CODIGO
+          DISEÑO: neumatico.DISEÑO ?? '', // Proveer un valor por defecto si falta
+          FECHA: neumatico.FECHA ?? '', // Proveer un valor por defecto si falta
         }))}
         assignedNeumaticos={neumaticosAsignados} // Pasar los neumáticos asignados
-        placa={vehiculo?.PLACA || ''}
-        kilometraje={vehiculo?.KILOMETRAJE || 0}
+        placa={vehiculo?.PLACA ?? ''} // Pasar la placa del vehículo
+        kilometraje={vehiculo?.KILOMETRAJE ?? 0}
       />
+
     </Stack>
   );
 }
