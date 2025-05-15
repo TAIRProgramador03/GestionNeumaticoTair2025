@@ -25,6 +25,7 @@ import Typography from '@mui/material/Typography';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import ModalAvertAsigNeu from './modal-avertAsigNeu';
+import ModalInputsNeu from './modal-inputsNeu';
 import { Neumatico } from '@/types/types';
 
 const ItemType = {
@@ -40,8 +41,6 @@ export interface ModalAsignacionNeuProps {
     placa: string;
     kilometraje: number;
 }
-
-
 
 const DraggableNeumatico: React.FC<{
     neumatico: Neumatico;
@@ -95,25 +94,48 @@ const isDuplicadoEnOtraPos = (
     );
 };
 
-const DropZone: React.FC<{
+interface DropZoneProps {
     position: string;
     onDrop: (neumatico: Neumatico) => void;
     isAssigned: boolean;
-    assignedNeumaticos: { [key: string]: Neumatico | null };
-    setAssignedNeumaticos: React.Dispatch<React.SetStateAction<{ [key: string]: Neumatico | null }>>;
-}> = ({ position, onDrop, isAssigned, assignedNeumaticos, setAssignedNeumaticos }) => {
-    const [menuAnchor, setMenuAnchor] = React.useState<null | HTMLElement>(null);
-    const [isModalOpen, setIsModalOpen] = React.useState(false);
-    const [dropBlocked, setDropBlocked] = React.useState(false);
-    const [lastRemovedCode, setLastRemovedCode] = React.useState<string | null>(null);
-    const [isShaking, setIsShaking] = React.useState(false);
+    assignedNeumaticos: Record<string, Neumatico | null>;
+    setAssignedNeumaticos: React.Dispatch<React.SetStateAction<Record<string, Neumatico | null>>>;
+}
 
-    const triggerShake = () => {
+interface ModalInputsNeuData {
+    kilometraje: number;
+    remanente: number;
+    presionAire: number;
+}
+
+const DropZone: React.FC<DropZoneProps> = ({
+    position,
+    onDrop,
+    isAssigned,
+    assignedNeumaticos,
+    setAssignedNeumaticos,
+}) => {
+    const [menuAnchor, setMenuAnchor] = React.useState<null | HTMLElement>(null);
+    const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
+    const [dropBlocked, setDropBlocked] = React.useState<boolean>(false);
+    const [lastRemovedCode, setLastRemovedCode] = React.useState<string | null>(null);
+    const [isShaking, setIsShaking] = React.useState<boolean>(false);
+    const [inputsModalOpen, setInputsModalOpen] = React.useState<boolean>(false);
+
+    const triggerShake = (): void => {
         setIsShaking(true);
         setTimeout(() => setIsShaking(false), 600); // Dura 600ms
     };
+    const handleInputsModalSubmit = (data: ModalInputsNeuData): void => {
+        console.log('Datos del modal pequeño:', data);
+        // Aquí puedes manejar los datos del modal pequeño
+    };
 
-    const [, drop] = useDrop(() => ({
+    const [, drop] = useDrop<
+        Neumatico,
+        void,
+        unknown
+    >(() => ({
         accept: ItemType.NEUMATICO,
         drop: (item: Neumatico) => {
             // Evita drops en condiciones no válidas
@@ -136,6 +158,14 @@ const DropZone: React.FC<{
                 return { ...prev, [position]: item };
             });
 
+            if (shouldShake) {
+                setTimeout(() => {
+                    triggerShake();
+                }, 0);
+            } else {
+                setInputsModalOpen(true); // Abrir el modal pequeño
+            }
+
             // Activar animación de shake si es necesario
             if (shouldShake) {
                 setTimeout(() => {
@@ -148,27 +178,27 @@ const DropZone: React.FC<{
     const ref = React.useRef<HTMLDivElement>(null);
     drop(ref);
 
-    const handleContextMenu = (event: React.MouseEvent) => {
+    const handleContextMenu = (event: React.MouseEvent): void => {
         event.preventDefault();
         if (isAssigned) {
             setMenuAnchor(event.currentTarget as HTMLElement);
         }
     };
 
-    const handleCloseMenu = () => {
+    const handleCloseMenu = (): void => {
         setMenuAnchor(null);
     };
 
-    const handleOpenModal = () => {
+    const handleOpenModal = (): void => {
         setIsModalOpen(true);
         handleCloseMenu();
     };
 
-    const handleCloseModal = () => {
+    const handleCloseModal = (): void => {
         setIsModalOpen(false);
     };
 
-    const handleConfirmRemove = () => {
+    const handleConfirmRemove = (): void => {
         const removedCode = assignedNeumaticos[position]?.CODIGO || null;
         setIsModalOpen(false);
         setDropBlocked(true);
@@ -221,6 +251,11 @@ const DropZone: React.FC<{
                 onClose={handleCloseModal}
                 onConfirm={handleConfirmRemove}
                 message={`¿Deseas quitar el neumático asignado en la posición ${position}?`}
+            />
+            <ModalInputsNeu
+                open={inputsModalOpen}
+                onClose={() => setInputsModalOpen(false)}
+                onSubmit={handleInputsModalSubmit}
             />
         </div>
     );
