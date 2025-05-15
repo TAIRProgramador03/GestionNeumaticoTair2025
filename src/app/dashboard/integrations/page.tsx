@@ -251,7 +251,13 @@ export default function Page(): React.JSX.Element {
       <CompaniesFilters onSearchChange={handleSearchChange}
         projectName={vehiculo?.PROYECTO || '—'} />
       <Stack direction="row" spacing={2}>
-        <Card sx={{ flex: 1, p: 2, position: 'relative' }}>
+        <Card sx={{
+          flex: 0.8,
+          p: 2,
+          position: 'relative',
+          maxHeight: '700px', // Ajusta este valor según lo que necesites
+          overflow: 'auto'
+        }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
             <Typography variant="h6">Diagrama de Asignación</Typography>
 
@@ -272,7 +278,7 @@ export default function Page(): React.JSX.Element {
                       boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
                     }}
                   >
-                    {`Kilometraje: ${animatedKilometraje.toLocaleString()} km`}
+                    {` ${animatedKilometraje.toLocaleString()} km`}
                   </Box>
                   {/* Ícono de neumáticos */}
                   <Box
@@ -311,7 +317,6 @@ export default function Page(): React.JSX.Element {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ backgroundColor: '#e0f7fa', fontWeight: 'bold' }}>Placa</TableCell>
                     <TableCell sx={{ backgroundColor: '#e0f7fa', fontWeight: 'bold' }}>Marca</TableCell>
                     <TableCell sx={{ backgroundColor: '#e0f7fa', fontWeight: 'bold' }}>Modelo</TableCell>
                     <TableCell sx={{ backgroundColor: '#e0f7fa', fontWeight: 'bold' }}>Tipo</TableCell>
@@ -322,7 +327,6 @@ export default function Page(): React.JSX.Element {
                 <TableBody>
                   {vehiculo ? (
                     <TableRow>
-                      <TableCell>{vehiculo.PLACA}</TableCell>
                       <TableCell>{vehiculo.MARCA}</TableCell>
                       <TableCell>{vehiculo.MODELO}</TableCell>
                       <TableCell>{vehiculo.TIPO}</TableCell>
@@ -340,18 +344,118 @@ export default function Page(): React.JSX.Element {
               </Table>
             </TableContainer>
           </Box>
-          <Box sx={{ mt: 4, textAlign: 'left' }}>
+          <Box sx={{ mt: 4, textAlign: 'left', position: 'relative', width: '262px', height: '365px' }}>
             <img
               src="/assets/car-diagram.png"
               alt="Base"
               style={{
-                maxWidth: '300px',
-                height: 'auto',
+                width: '238px',
+                height: '424px',
+                objectFit: 'contain',
+                position: 'absolute',
+                top: '-43px',
+                left: '-25px',
+                zIndex: 1,
               }}
             />
+            {/* POS01 */}
+            <Box
+              sx={{
+                position: 'absolute',
+                top: '39px',
+                left: '133px',
+                zIndex: 2,
+                width: '26px',
+                height: '60px',
+                borderRadius: '15px',
+                backgroundColor: neumaticosAsignados.some(n => n.POSICION === 'POS01') ? 'lightgreen' : 'transparent',
+                border: '2px solid #888',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 'bold',
+                color: '#222',
+                fontSize: 18,
+                pointerEvents: 'none'
+              }}
+            >
+            </Box>
+            {/* POS02 */}
+            <Box
+              sx={{
+                position: 'absolute',
+                top: '39px',
+                left: '29px',
+                zIndex: 2,
+                width: '26px',
+                height: '60px',
+                borderRadius: '15px',
+                backgroundColor: neumaticosAsignados.some(n => n.POSICION === 'POS02') ? 'lightgreen' : 'transparent',
+                border: '2px solid #888',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 'bold',
+                color: '#222',
+                fontSize: 18,
+                pointerEvents: 'none'
+              }}
+            >
+            </Box>
+            {/* POS03 */}
+            <Box
+              sx={{
+                position: 'absolute',
+                top: '208px',
+                left: '133px',
+                zIndex: 2,
+                width: '26px',
+                height: '60px',
+                borderRadius: '15px',
+                backgroundColor: neumaticosAsignados.some(n => n.POSICION === 'POS03') ? 'lightgreen' : 'transparent',
+                border: '2px solid #888',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 'bold',
+                color: '#222',
+                fontSize: 18,
+                pointerEvents: 'none'
+              }}
+            >
+            </Box>
+            {/* POS04 */}
+            <Box
+              sx={{
+                position: 'absolute',
+                top: '208px',
+                left: '29px',
+                zIndex: 2,
+                width: '26px',
+                height: '60px',
+                borderRadius: '15px',
+                backgroundColor: neumaticosAsignados.some(n => n.POSICION === 'POS04') ? 'lightgreen' : 'transparent',
+                border: '2px solid #888',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 'bold',
+                color: '#222',
+                fontSize: 18,
+                pointerEvents: 'none'
+              }}
+            >
+            </Box>
+
           </Box>
         </Card>
-        <Card sx={{ flex: 1, p: 2, position: 'relative' }}>
+        <Card sx={{
+          flex: 1.3,
+          p: 2,
+          position: 'relative',
+          maxHeight: '700px', // Ajusta este valor según lo que necesites
+          overflow: 'auto'
+        }}>
           <Typography variant="h6" sx={{ mb: 2 }}>
             Neumáticos Asignados
           </Typography>
