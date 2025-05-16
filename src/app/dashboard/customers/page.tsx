@@ -14,7 +14,7 @@ import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
 import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 import styled from '@emotion/styled';
 
-//import { CustomersFilters } from '@/components/dashboard/customer/customers-filters';
+import { CustomersFilters } from '@/components/dashboard/customer/customers-filters';
 import { CustomersTable } from '@/components/dashboard/customer/customers-table';
 import { Neumaticos } from '@/api/Neumaticos';
 import { MainNav } from '@/components/dashboard/layout/main-nav';
@@ -59,6 +59,8 @@ export default function Page(): React.JSX.Element {
   };
 
   const [projectCount, setProjectCount] = useState<number>(0);
+  const [disponiblesCount, setDisponiblesCount] = useState<number>(0);
+  const [asignadosCount, setAsignadosCount] = useState<number>(0);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -73,12 +75,35 @@ export default function Page(): React.JSX.Element {
     fetchData();
   }, []);
 
+  // useEffect(() => {
+  //   fetch('http://192.168.5.207:3001/api/po-neumaticos/proyectos/cantidad')
+  //     .then((res) => res.json())
+  //     .then(({ cantidad }) => setProjectCount(cantidad))
+  //     .catch(console.error);
+  // }, []);
+
   useEffect(() => {
-    fetch('http://192.168.5.207:3001/api/po-neumaticos/proyectos/cantidad')
+    fetch('http://192.168.5.207:3001/api/po-neumaticos/cantidad')
       .then((res) => res.json())
       .then(({ cantidad }) => setProjectCount(cantidad))
       .catch(console.error);
   }, []);
+
+  useEffect(() => {
+    fetch('http://192.168.5.207:3001/api/po-neumaticos/disponibles/cantidad')
+      .then((res) => res.json())
+      .then(({ cantidad }) => setDisponiblesCount(cantidad))
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    fetch('http://192.168.5.207:3001/api/po-neumaticos/asignados/cantidad')
+      .then((res) => res.json())
+      .then(({ cantidad }) => setAsignadosCount(cantidad))
+      .catch(console.error);
+  }, []);
+
+
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value.toLowerCase());
@@ -101,7 +126,7 @@ export default function Page(): React.JSX.Element {
     c.RQ.toString().toLowerCase().includes(searchText) ||
     c.OC.toString().toLowerCase().includes(searchText) ||
     c.PROYECTO.toLowerCase().includes(searchText) ||
-    c.PROVEEDOR.toLowerCase().includes(searchText)  ||
+    c.PROVEEDOR.toLowerCase().includes(searchText) ||
     c.FECHA.toLowerCase().includes(searchText) ||
     c.ESTADO_ASIGNACION.toLowerCase().includes(searchText)
   );
@@ -200,9 +225,10 @@ export default function Page(): React.JSX.Element {
           </div>
         </LoaderOverlay>
       )}
+
       <Stack spacing={3}>
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <Box>
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
             <TextField
               size="small"
               value={searchText}
@@ -238,6 +264,12 @@ export default function Page(): React.JSX.Element {
             </Button>
           </Box>
         </Stack>
+        <CustomersFilters
+          projectCount={projectCount}
+          disponiblesCount={disponiblesCount}
+          asignadosCount={asignadosCount}
+        />
+        
 
         <CustomersTable
           count={filteredCustomers.length}
@@ -250,7 +282,7 @@ export default function Page(): React.JSX.Element {
             setPage(0);
           }}
         />
-      </Stack>
+      </Stack >
 
       {modalCargaVisible && resultadoCarga && (
         <ModalOverlay>
@@ -284,36 +316,39 @@ export default function Page(): React.JSX.Element {
             }}>Aceptar</button>
           </Modal>
         </ModalOverlay>
-      )}
+      )
+      }
 
-      {modalErroresVisible && resultadoCarga?.errores?.length > 0 && (
-        <ModalOverlay>
-          <Modal>
-            <h2>Errores de carga</h2>
-            <div style={{ maxHeight: '400px', overflowY: 'auto', paddingRight: '10px', minWidth: 'min(90vw, 600px)' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr>
-                    <th>Fila</th>
-                    <th>Mensaje</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {resultadoCarga.errores.map((err: { fila: number; mensaje: string }, idx: number) => (
-                    <tr key={idx}>
-                      <td>{err.fila}</td>
-                      <td style={{ color: 'red', fontWeight: 'bold' }}>
-                        {err.mensaje || "Error desconocido"}
-                      </td>
+      {
+        modalErroresVisible && resultadoCarga?.errores?.length > 0 && (
+          <ModalOverlay>
+            <Modal>
+              <h2>Errores de carga</h2>
+              <div style={{ maxHeight: '400px', overflowY: 'auto', paddingRight: '10px', minWidth: 'min(90vw, 600px)' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr>
+                      <th>Fila</th>
+                      <th>Mensaje</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <button onClick={() => setModalErroresVisible(false)}>Cerrar</button>
-          </Modal>
-        </ModalOverlay>
-      )}
+                  </thead>
+                  <tbody>
+                    {resultadoCarga.errores.map((err: { fila: number; mensaje: string }, idx: number) => (
+                      <tr key={idx}>
+                        <td>{err.fila}</td>
+                        <td style={{ color: 'red', fontWeight: 'bold' }}>
+                          {err.mensaje || "Error desconocido"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <button onClick={() => setModalErroresVisible(false)}>Cerrar</button>
+            </Modal>
+          </ModalOverlay>
+        )
+      }
     </>
   );
 }

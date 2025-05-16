@@ -9,42 +9,160 @@ import Typography from '@mui/material/Typography';
 
 
 export interface CustomersFiltersProps {
-  //onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   projectCount: number;
+  disponiblesCount: number;
+  asignadosCount: number;
 }
 
 export function CustomersFilters({
- // onSearchChange,
   projectCount,
+  disponiblesCount,
+  asignadosCount,
 }: CustomersFiltersProps): React.JSX.Element {
+  // Animaciones para cada contador
+  const [displayCount, setDisplayCount] = React.useState(0);
+  const [displayDisponibles, setDisplayDisponibles] = React.useState(0);
+  const [displayAsignados, setDisplayAsignados] = React.useState(0);
+
+  // Animación total
+  React.useEffect(() => {
+    let start = 0;
+    let rafId: number;
+    const animate = () => {
+      const increment = Math.ceil((projectCount - start) / 20);
+      start += increment;
+      if (start >= projectCount) {
+        setDisplayCount(projectCount);
+      } else {
+        setDisplayCount(start);
+        rafId = requestAnimationFrame(animate);
+      }
+    };
+    if (projectCount > 0) {
+      setDisplayCount(0);
+      rafId = requestAnimationFrame(animate);
+    } else {
+      setDisplayCount(0);
+    }
+    return () => cancelAnimationFrame(rafId);
+  }, [projectCount]);
+
+  // Animación disponibles
+  React.useEffect(() => {
+    let start = 0;
+    let rafId: number;
+    const animate = () => {
+      const increment = Math.ceil((disponiblesCount - start) / 20);
+      start += increment;
+      if (start >= disponiblesCount) {
+        setDisplayDisponibles(disponiblesCount);
+      } else {
+        setDisplayDisponibles(start);
+        rafId = requestAnimationFrame(animate);
+      }
+    };
+    if (disponiblesCount > 0) {
+      setDisplayDisponibles(0);
+      rafId = requestAnimationFrame(animate);
+    } else {
+      setDisplayDisponibles(0);
+    }
+    return () => cancelAnimationFrame(rafId);
+  }, [disponiblesCount]);
+
+  // Animación asignados
+  React.useEffect(() => {
+    let start = 0;
+    let rafId: number;
+    const animate = () => {
+      const increment = Math.ceil((asignadosCount - start) / 20);
+      start += increment;
+      if (start >= asignadosCount) {
+        setDisplayAsignados(asignadosCount);
+      } else {
+        setDisplayAsignados(start);
+        rafId = requestAnimationFrame(animate);
+      }
+    };
+    if (asignadosCount > 0) {
+      setDisplayAsignados(0);
+      rafId = requestAnimationFrame(animate);
+    } else {
+      setDisplayAsignados(0);
+    }
+    return () => cancelAnimationFrame(rafId);
+  }, [asignadosCount]);
+
   return (
     <Card sx={{ p: 2 }}>
       <Stack direction="row" spacing={2} alignItems="center">
-        {/* 1️⃣ El input de búsqueda */}
-        {/* <OutlinedInput
-          defaultValue=""
-          onChange={onSearchChange}
-          placeholder="Buscar neumáticos"
-          startAdornment={
-            <InputAdornment position="start">
-              <MagnifyingGlassIcon fontSize="var(--icon-fontSize-md)" />
-            </InputAdornment>
-          }
-          sx={{ maxWidth: '300px' }}
-        /> */}
-
-        {/* 2️⃣ El icono de proyecto */}
-        {/* <Box
-          component="img"
-          src="/assets/proyecto.png"
-          alt="Proyectos"
-          sx={{ width: 70, height: 70 }}
-        /> */}
-
-        {/* 3️⃣ El número de proyectos */}
-        {/* <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
-          {projectCount}
-        </Typography> */}
+        <Stack direction="column" alignItems="center" spacing={1}>
+          <Box
+            sx={{
+              width: 150,
+              height: 80,
+              bgcolor: '#f5f5f5',
+              borderRadius: '17px',
+              border: '5px solid #ccc',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 32,
+              fontWeight: 'bold',
+              color: '#333',
+            }}
+          >
+            {displayCount}
+          </Box>
+          <Typography variant="body2" color="text.secondary">
+            Total neumáticos
+          </Typography>
+        </Stack>
+        <Stack direction="column" alignItems="center" spacing={1}>
+          <Box
+            sx={{
+              width: 150,
+              height: 80,
+              bgcolor: '#f5f5f5',
+              borderRadius: '17px',
+              border: '5px solid #ccc',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 32,
+              fontWeight: 'bold',
+              color: '#333',
+            }}
+          >
+            {displayDisponibles}
+          </Box>
+          <Typography variant="body2" color="text.secondary">
+            Disponibles
+          </Typography>
+        </Stack>
+        <Stack direction="column" alignItems="center" spacing={1}>
+          <Box
+            sx={{
+              width: 150,
+              height: 80,
+              bgcolor: '#f5f5f5',
+              borderRadius: '17px',
+              border: '5px solid #ccc',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 32,
+              fontWeight: 'bold',
+              color: '#333',
+            }}
+          >
+            {displayAsignados}
+          </Box>
+          <Typography variant="body2" color="text.secondary">
+            Asignados
+          </Typography>
+        </Stack>
+        {/* ...otros rectángulos si los necesitas... */}
       </Stack>
     </Card>
   );
