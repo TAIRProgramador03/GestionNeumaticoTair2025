@@ -9,19 +9,19 @@ import Typography from '@mui/material/Typography';
 
 
 export interface CustomersFiltersProps {
-  onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  //onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   projectCount: number;
 }
 
 export function CustomersFilters({
-  onSearchChange,
+ // onSearchChange,
   projectCount,
 }: CustomersFiltersProps): React.JSX.Element {
   return (
     <Card sx={{ p: 2 }}>
       <Stack direction="row" spacing={2} alignItems="center">
         {/* 1️⃣ El input de búsqueda */}
-        <OutlinedInput
+        {/* <OutlinedInput
           defaultValue=""
           onChange={onSearchChange}
           placeholder="Buscar neumáticos"
@@ -31,20 +31,20 @@ export function CustomersFilters({
             </InputAdornment>
           }
           sx={{ maxWidth: '300px' }}
-        />
+        /> */}
 
         {/* 2️⃣ El icono de proyecto */}
-        <Box
+        {/* <Box
           component="img"
           src="/assets/proyecto.png"
           alt="Proyectos"
           sx={{ width: 70, height: 70 }}
-        />
+        /> */}
 
         {/* 3️⃣ El número de proyectos */}
-        <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
+        {/* <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
           {projectCount}
-        </Typography>
+        </Typography> */}
       </Stack>
     </Card>
   );

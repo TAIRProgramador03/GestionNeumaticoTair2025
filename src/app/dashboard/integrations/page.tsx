@@ -245,7 +245,7 @@ export default function Page(): React.JSX.Element {
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
-          <Typography variant="h4">Asignacion de Neumaticos</Typography>
+          <Typography variant="h4">Asignación de Neumáticos</Typography>
         </Stack>
       </Stack>
       <CompaniesFilters onSearchChange={handleSearchChange}
@@ -509,7 +509,7 @@ export default function Page(): React.JSX.Element {
                   boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
                 }}
               >
-                {`Total: ${animatedTotalNeumaticos.toLocaleString()} Neumáticos`}
+                {`Tengo: ${animatedTotalNeumaticos.toLocaleString()} Neumáticos`}
               </Box>
             </Stack>
             <OutlinedInput

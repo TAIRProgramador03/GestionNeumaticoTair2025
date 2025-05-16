@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 import tirePng from "@/public/assets/tire.png";
 import { cargarPadronNeumatico } from "@/api/Neumaticos";
 import { useState, useRef, useEffect } from "react";
@@ -13,21 +14,22 @@ import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
 import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 import styled from '@emotion/styled';
 
-import { config } from '@/config';
-import { CustomersFilters } from '@/components/dashboard/customer/customers-filters';
+//import { CustomersFilters } from '@/components/dashboard/customer/customers-filters';
 import { CustomersTable } from '@/components/dashboard/customer/customers-table';
 import { Neumaticos } from '@/api/Neumaticos';
+import { MainNav } from '@/components/dashboard/layout/main-nav';
 import type { Customer } from '@/components/dashboard/customer/customers-table';
 
 export default function Page(): React.JSX.Element {
   const [customers, setCustomers] = React.useState<Customer[]>([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [loading, setLoading] = useState(false);
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [resultadoCarga, setResultadoCarga] = useState<any>(null);
   const [modalCargaVisible, setModalCargaVisible] = useState(false);
   const [modalErroresVisible, setModalErroresVisible] = useState(false);
+  const [searchText, setSearchText] = useState('');
 
   interface FileUploadEvent extends React.ChangeEvent<HTMLInputElement> {
     target: HTMLInputElement & { files: FileList };
@@ -52,12 +54,11 @@ export default function Page(): React.JSX.Element {
       alert("Error al cargar el archivo");
     } finally {
       setLoading(false);
-      event.target.value = ""; // Limpia el input
+      event.target.value = "";
     }
   };
 
   const [projectCount, setProjectCount] = useState<number>(0);
-
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -73,14 +74,33 @@ export default function Page(): React.JSX.Element {
   }, []);
 
   useEffect(() => {
-  fetch('/api/po-neumatico/count')
-    .then((res) => res.json())
-    .then(({ count }) => setProjectCount(count))
-    .catch(console.error);
-}, []);
+    fetch('http://192.168.5.207:3001/api/po-neumaticos/proyectos/cantidad')
+      .then((res) => res.json())
+      .then(({ cantidad }) => setProjectCount(cantidad))
+      .catch(console.error);
+  }, []);
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value.toLowerCase());
+    setPage(0);
+  };
 
-  const paginatedCustomers = applyPagination(customers, page, rowsPerPage);
+  const handleMainNavSearch = (text: string) => {
+    setSearchText(text.toLowerCase());
+    setPage(0);
+  };
+
+  const filteredCustomers = customers.filter((c) =>
+    c.CODIGO.toString().toLowerCase().includes(searchText) ||
+    c.MARCA.toLowerCase().includes(searchText) ||
+    c.REMANENTE.toString().toLowerCase().includes(searchText) ||
+    c.RQ.toString().toLowerCase().includes(searchText) ||
+    c.OC.toString().toLowerCase().includes(searchText) ||
+    c.PROYECTO.toLowerCase().includes(searchText) ||
+    c.PROVEEDOR.toLowerCase().includes(searchText)
+  );
+
+  const paginatedCustomers = applyPagination(filteredCustomers, page, rowsPerPage);
 
   const ModalOverlay = styled.div`
   position: fixed;
@@ -95,7 +115,7 @@ export default function Page(): React.JSX.Element {
   z-index: 1000;
 `;
 
-const Modal = styled.div`
+  const Modal = styled.div`
   background: white;
   padding: 24px;
   border-radius: 10px;
@@ -119,7 +139,7 @@ const Modal = styled.div`
   }
 `;
 
-const ErrorTable = styled.table`
+  const ErrorTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
@@ -135,7 +155,7 @@ const ErrorTable = styled.table`
   }
 `;
 
-const LoaderOverlay = styled.div`
+  const LoaderOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -164,73 +184,57 @@ const LoaderOverlay = styled.div`
   }
 `;
 
-const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const q = e.target.value.toLowerCase();
-  setPage(0);
-  // aquí decides si filtras en cliente...
-  // por ejemplo:
-  setCustomers((all) =>
-    all.filter((c) =>
-      c.CODIGO.toString().toLowerCase().includes(q) ||
-      c.MARCA.toLowerCase().includes(q)
-    )
-  );
-  // o si haces una nueva llamada al backend, la disparas aquí
-};
-
-
-
-
   return (
     <>
-    {loading && (
+      {loading && (
         <LoaderOverlay>
           <div className="loader-tire">
-          <img src="/assets/tire.png" alt="Cargando..." />
+            <img src="/assets/tire.png" alt="Cargando..." />
             <p style={{ marginTop: "10px", fontWeight: "bold" }}>Procesando Excel...</p>
           </div>
         </LoaderOverlay>
       )}
       <Stack spacing={3}>
-        <Stack direction="row" spacing={3}>
-          <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
-            <Typography variant="h4">Padron de Neumaticos</Typography>
-            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-              <>
-                <input
-                  type="file"
-                  accept=".xlsx, .xls"
-                  ref={inputFileRef}
-                  style={{ display: "none" }}
-                  onChange={handleFileUpload}
-                />
-                <Button
-                  color="inherit"
-                  startIcon={<UploadIcon />}
-                  onClick={() => inputFileRef.current?.click()}
-                  disabled={loading}
-                >
-                  {loading ? "Cargando..." : "Importar"}
-                </Button>
-              </>
-
-              <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
-                Export
-              </Button>
-            </Stack>
-          </Stack>
-          <div>
+        <Stack direction="row" alignItems="center" justifyContent="space-between">
+          <Box>
+            <TextField
+              size="small"
+              value={searchText}
+              onChange={e => {
+                setSearchText(e.target.value.toLowerCase());
+                setPage(0);
+              }}
+              placeholder="Buscar neumático..."
+              sx={{ maxWidth: 300 }}
+            />
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <input
+              type="file"
+              accept=".xlsx, .xls"
+              ref={inputFileRef}
+              style={{ display: "none" }}
+              onChange={handleFileUpload}
+            />
+            <Button
+              color="inherit"
+              startIcon={<UploadIcon />}
+              onClick={() => inputFileRef.current?.click()}
+              disabled={loading}
+            >
+              {loading ? "Cargando..." : "Importar"}
+            </Button>
+            <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
+              Export
+            </Button>
             <Button startIcon={<PlusIcon fontSize="var(--icon-fontSize-md)" />} variant="contained">
               Agregar
             </Button>
-          </div>
+          </Box>
         </Stack>
-        <CustomersFilters
-  onSearchChange={handleSearchChange}
-  projectCount={projectCount}
-/>
+
         <CustomersTable
-          count={customers.length}
+          count={filteredCustomers.length}
           page={page}
           rows={paginatedCustomers}
           rowsPerPage={rowsPerPage}
@@ -289,14 +293,14 @@ const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                   </tr>
                 </thead>
                 <tbody>
-                    {resultadoCarga.errores.map((err: { fila: number; mensaje: string }, idx: number) => (
+                  {resultadoCarga.errores.map((err: { fila: number; mensaje: string }, idx: number) => (
                     <tr key={idx}>
                       <td>{err.fila}</td>
                       <td style={{ color: 'red', fontWeight: 'bold' }}>
-                      {err.mensaje || "Error desconocido"}
+                        {err.mensaje || "Error desconocido"}
                       </td>
                     </tr>
-                    ))}
+                  ))}
                 </tbody>
               </table>
             </div>

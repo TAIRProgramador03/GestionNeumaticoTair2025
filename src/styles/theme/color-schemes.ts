@@ -8,12 +8,12 @@ export const colorSchemes = {
     palette: {
       action: { disabledBackground: 'rgba(0, 0, 0, 0.12)' },
       background: {
-        default: 'var(--mui-palette-neutral-950)',
-        defaultChannel: '9 10 11',
-        paper: 'var(--mui-palette-neutral-900)',
-        level1: 'var(--mui-palette-neutral-800)',
-        level2: 'var(--mui-palette-neutral-700)',
-        level3: 'var(--mui-palette-neutral-600)',
+        default: '#111315', // era var(--mui-palette-neutral-950)
+        defaultChannel: '17 19 21',
+        paper: '#181C20',   // era var(--mui-palette-neutral-900)
+        level1: '#23272B',  // era var(--mui-palette-neutral-800)
+        level2: '#343A40',  // era var(--mui-palette-neutral-700)
+        level3: '#495057',  // era var(--mui-palette-neutral-600)
       },
       common: { black: '#000000', white: '#ffffff' },
       divider: 'var(--mui-palette-neutral-700)',
@@ -74,12 +74,12 @@ export const colorSchemes = {
     palette: {
       action: { disabledBackground: 'rgba(0, 0, 0, 0.06)' },
       background: {
-        default: 'var(--mui-palette-common-white)',
+        default: '#ffffff', // era var(--mui-palette-common-white)
         defaultChannel: '255 255 255',
-        paper: 'var(--mui-palette-common-white)',
-        level1: 'var(--mui-palette-neutral-50)',
-        level2: 'var(--mui-palette-neutral-100)',
-        level3: 'var(--mui-palette-neutral-200)',
+        paper: '#ffffff',   // era var(--mui-palette-common-white)
+        level1: '#F8F9FA',  // era var(--mui-palette-neutral-50)
+        level2: '#F3F4F6',  // era var(--mui-palette-neutral-100)
+        level3: '#E5E7EB',  // era var(--mui-palette-neutral-200)
       },
       common: { black: '#000000', white: '#ffffff' },
       divider: 'var(--mui-palette-neutral-200)',
