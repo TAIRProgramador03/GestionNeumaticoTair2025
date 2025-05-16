@@ -24,6 +24,7 @@ export interface Customer {
   PROVEEDOR: string;
   FECHA: string;
   USUARIO_SUPER: string;
+  ESTADO_ASIGNACION: string;
   ESTADO: string;
 }
 
@@ -84,6 +85,7 @@ export function CustomersTable({
               <TableCell><Typography fontWeight="bold">Proyecto</Typography></TableCell>
               <TableCell><Typography fontWeight="bold">Proveedor</Typography></TableCell>
               <TableCell><Typography fontWeight="bold">Fecha</Typography></TableCell>
+              <TableCell><Typography fontWeight="bold">Situación</Typography></TableCell>
               <TableCell><Typography fontWeight="bold">Estado</Typography></TableCell>
             </TableRow>
           </TableHead>
@@ -117,6 +119,7 @@ export function CustomersTable({
                   <TableCell>{row.PROYECTO}</TableCell>
                   <TableCell>{row.PROVEEDOR}</TableCell>
                   <TableCell>{row.FECHA}</TableCell>
+                  <TableCell>{row.ESTADO_ASIGNACION}</TableCell>
                   <TableCell>
                     <Box sx={{ position: 'relative', width: '100px' }}>
                       <LinearProgress

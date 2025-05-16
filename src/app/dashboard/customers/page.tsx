@@ -93,11 +93,17 @@ export default function Page(): React.JSX.Element {
   const filteredCustomers = customers.filter((c) =>
     c.CODIGO.toString().toLowerCase().includes(searchText) ||
     c.MARCA.toLowerCase().includes(searchText) ||
+    c.MEDIDA.toLowerCase().includes(searchText) ||
+    c.DISEÑO.toLowerCase().includes(searchText) ||
     c.REMANENTE.toString().toLowerCase().includes(searchText) ||
+    c.PR.toString().toLowerCase().includes(searchText) ||
+    c.CARGA.toString().toLowerCase().includes(searchText) ||
     c.RQ.toString().toLowerCase().includes(searchText) ||
     c.OC.toString().toLowerCase().includes(searchText) ||
     c.PROYECTO.toLowerCase().includes(searchText) ||
-    c.PROVEEDOR.toLowerCase().includes(searchText)
+    c.PROVEEDOR.toLowerCase().includes(searchText)  ||
+    c.FECHA.toLowerCase().includes(searchText) ||
+    c.ESTADO_ASIGNACION.toLowerCase().includes(searchText)
   );
 
   const paginatedCustomers = applyPagination(filteredCustomers, page, rowsPerPage);
