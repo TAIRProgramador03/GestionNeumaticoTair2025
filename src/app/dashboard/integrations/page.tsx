@@ -255,11 +255,10 @@ export default function Page(): React.JSX.Element {
           flex: 0.8,
           p: 2,
           position: 'relative',
-          maxHeight: '700px', // Ajusta este valor según lo que necesites
+          maxHeight: '700px',
           overflow: 'auto'
         }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
-            <Typography variant="h6">Diagrama de Asignación</Typography>
 
             <Stack direction="row" alignItems="center" spacing={2}>
               {vehiculo && (
@@ -278,7 +277,7 @@ export default function Page(): React.JSX.Element {
                       boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
                     }}
                   >
-                    {` ${animatedKilometraje.toLocaleString()} km`}
+                    {`Último Kilometraje ${animatedKilometraje.toLocaleString()} km`}
                   </Box>
                   {/* Ícono de neumáticos */}
                   <Box
@@ -457,7 +456,7 @@ export default function Page(): React.JSX.Element {
           overflow: 'auto'
         }}>
           <Typography variant="h6" sx={{ mb: 2 }}>
-            Neumáticos Asignados
+            Neumáticos instalados en esta unidad :
           </Typography>
           <TableContainer component={Paper} sx={{ mb: 4 }}>
             <Table>
@@ -509,7 +508,7 @@ export default function Page(): React.JSX.Element {
                   boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
                 }}
               >
-                {`Tengo: ${animatedTotalNeumaticos.toLocaleString()} Neumáticos`}
+                {`Disponibles: ${animatedTotalNeumaticos.toLocaleString()} Neumáticos`}
               </Box>
             </Stack>
             <OutlinedInput

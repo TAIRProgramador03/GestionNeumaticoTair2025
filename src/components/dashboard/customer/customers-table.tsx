@@ -55,9 +55,9 @@ export function CustomersTable({
   const selectedAll = rows.length > 0 && selected?.size === rows.length;
 
   return (
-    <Card>
-      <Box sx={{ display: 'inline-block', width: '1440px', overflowX: 'auto', }}>
-        <Table sx={{ tableLayout: 'auto', width: '100%' }}>
+    <Card sx={{ width: '100%' }}>
+      <Box sx={{ width: '100%', overflowX: 'auto' }}>
+        <Table sx={{ width: '100%' }}>
           <TableHead>
             <TableRow>
               <TableCell padding="checkbox">
@@ -84,7 +84,7 @@ export function CustomersTable({
               <TableCell><Typography fontWeight="bold">OC</Typography></TableCell>
               <TableCell><Typography fontWeight="bold">Proyecto</Typography></TableCell>
               <TableCell><Typography fontWeight="bold">Proveedor</Typography></TableCell>
-              <TableCell><Typography fontWeight="bold">Fecha</Typography></TableCell>
+              <TableCell><Typography fontWeight="bold">Fecha Fabricación</Typography></TableCell>
               <TableCell><Typography fontWeight="bold">Situación</Typography></TableCell>
               <TableCell><Typography fontWeight="bold">Estado</Typography></TableCell>
             </TableRow>
@@ -121,7 +121,7 @@ export function CustomersTable({
                   <TableCell>{row.FECHA}</TableCell>
                   <TableCell>{row.ESTADO_ASIGNACION}</TableCell>
                   <TableCell>
-                    <Box sx={{ position: 'relative', width: '100px' }}>
+                    <Box sx={{ position: 'relative', minWidth: 60, width: '100%' }}>
                       <LinearProgress
                         variant="determinate"
                         value={parseInt(row.ESTADO, 10)}
@@ -159,15 +159,17 @@ export function CustomersTable({
         </Table>
       </Box>
       <Divider />
-      <TablePagination
-        component="div"
-        count={count}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        onPageChange={onPageChange}
-        onRowsPerPageChange={onRowsPerPageChange}
-        rowsPerPageOptions={[10, 20, 30]}
-      />
+      <Box sx={{ px: 2 }}>
+        <TablePagination
+          component="div"
+          count={count}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          onPageChange={onPageChange}
+          onRowsPerPageChange={onRowsPerPageChange}
+          rowsPerPageOptions={[10, 20, 30]}
+        />
+      </Box>
     </Card>
   );
 }

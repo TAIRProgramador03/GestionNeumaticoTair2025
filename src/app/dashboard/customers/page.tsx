@@ -23,7 +23,7 @@ import type { Customer } from '@/components/dashboard/customer/customers-table';
 export default function Page(): React.JSX.Element {
   const [customers, setCustomers] = React.useState<Customer[]>([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(8);
   const [loading, setLoading] = useState(false);
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [resultadoCarga, setResultadoCarga] = useState<any>(null);
@@ -226,9 +226,15 @@ export default function Page(): React.JSX.Element {
         </LoaderOverlay>
       )}
 
-      <Stack spacing={3}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+      <Stack spacing={3} sx={{ width: '100%' }}>
+        <Stack
+          direction={{ xs: 'column', md: 'row' }}
+          alignItems={{ xs: 'stretch', md: 'center' }}
+          justifyContent="space-between"
+          spacing={2}
+          sx={{ width: '100%' }}
+        >
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flex: 1 }}>
             <TextField
               size="small"
               value={searchText}
@@ -237,10 +243,10 @@ export default function Page(): React.JSX.Element {
                 setPage(0);
               }}
               placeholder="Buscar neumático..."
-              sx={{ maxWidth: 300 }}
+              sx={{ maxWidth: 300, width: '100%' }}
             />
           </Box>
-          <Box sx={{ display: 'flex', gap: 2 }}>
+          <Box sx={{ display: 'flex', gap: 2, mt: { xs: 2, md: 0 } }}>
             <input
               type="file"
               accept=".xlsx, .xls"
@@ -257,7 +263,7 @@ export default function Page(): React.JSX.Element {
               {loading ? "Cargando..." : "Importar"}
             </Button>
             <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
-              Export
+              Exportar
             </Button>
             <Button startIcon={<PlusIcon fontSize="var(--icon-fontSize-md)" />} variant="contained">
               Agregar

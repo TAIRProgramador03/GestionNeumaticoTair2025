@@ -47,6 +47,7 @@ export function MobileNav({ open, onClose }: MobileNavProps): React.JSX.Element 
           color: 'var(--MobileNav-color)',
           display: 'flex',
           flexDirection: 'column',
+          height: '100%',
           maxWidth: '100%',
           scrollbarWidth: 'none',
           width: 'var(--MobileNav-width)',
@@ -61,24 +62,30 @@ export function MobileNav({ open, onClose }: MobileNavProps): React.JSX.Element 
         <Box component={RouterLink} href={paths.home} sx={{ display: 'inline-flex' }}>
           <Logo color="light" height={32} width={122} />
         </Box>
-        
       </Stack>
       <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
-      <Box component="nav" sx={{ flex: '1 1 auto', p: '12px' }}>
-        {renderNavItems({ pathname, items: navItems })}
+      {/* Este Box empuja el nav hacia abajo */}
+      <Box sx={{ flex: 1 }} />
+      <Box component="nav" sx={{ p: '12px' }}>
+        {renderNavItems({ pathname, items: navItems, onClose })}
       </Box>
       <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
-      
     </Drawer>
   );
 }
 
-function renderNavItems({ items = [], pathname }: { items?: NavItemConfig[]; pathname: string }): React.JSX.Element {
+function renderNavItems({
+  items = [],
+  pathname,
+  onClose,
+}: {
+  items?: NavItemConfig[];
+  pathname: string;
+  onClose?: () => void;
+}): React.JSX.Element {
   const children = items.reduce((acc: React.ReactNode[], curr: NavItemConfig): React.ReactNode[] => {
     const { key, ...item } = curr;
-
-    acc.push(<NavItem key={key} pathname={pathname} {...item} />);
-
+    acc.push(<NavItem key={key} pathname={pathname} onClose={onClose} {...item} />);
     return acc;
   }, []);
 
@@ -91,9 +98,10 @@ function renderNavItems({ items = [], pathname }: { items?: NavItemConfig[]; pat
 
 interface NavItemProps extends Omit<NavItemConfig, 'items'> {
   pathname: string;
+  onClose?: () => void;
 }
 
-function NavItem({ disabled, external, href, icon, matcher, pathname, title }: NavItemProps): React.JSX.Element {
+function NavItem({ disabled, external, href, icon, matcher, pathname, title, onClose }: NavItemProps): React.JSX.Element {
   const active = isNavItemActive({ disabled, external, href, matcher, pathname });
   const Icon = icon ? navIcons[icon] : null;
 
@@ -106,8 +114,9 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title }: N
               href,
               target: external ? '_blank' : undefined,
               rel: external ? 'noreferrer' : undefined,
+              onClick: onClose, // <-- Aquí cierras el drawer al hacer click
             }
-          : { role: 'button' })}
+          : { role: 'button', onClick: onClose })}
         sx={{
           alignItems: 'center',
           borderRadius: 1,

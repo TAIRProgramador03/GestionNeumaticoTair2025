@@ -9,116 +9,113 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { ArrowSquareUpRight as ArrowSquareUpRightIcon } from '@phosphor-icons/react/dist/ssr/ArrowSquareUpRight';
-import { CaretUpDown as CaretUpDownIcon } from '@phosphor-icons/react/dist/ssr/CaretUpDown';
+import { CaretLeft, CaretRight } from '@phosphor-icons/react';
 
 import type { NavItemConfig } from '@/types/nav';
 import { paths } from '@/paths';
 import { isNavItemActive } from '@/lib/is-nav-item-active';
-import { Logo } from '@/components/core/logo';
 
 import { navItems } from './config';
 import { navIcons } from './nav-icons';
 
-export function SideNav(): React.JSX.Element {
+interface SideNavProps {
+  collapsed: boolean;
+  setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export function SideNav({ collapsed, setCollapsed }: SideNavProps): React.JSX.Element {
   const pathname = usePathname();
+  const navRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (navRef.current && !navRef.current.contains(event.target as Node)) {
+        setCollapsed(true);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [setCollapsed]);
 
   return (
     <Box
       sx={{
-        '--SideNav-background': 'var(--mui-palette-neutral-950)',
-        '--SideNav-color': 'var(--mui-palette-common-white)',
-        '--NavItem-color': 'var(--mui-palette-neutral-300)',
-        '--NavItem-hover-background': 'rgba(255, 255, 255, 0.04)',
-        '--NavItem-active-background': 'var(--mui-palette-primary-main)',
-        '--NavItem-active-color': 'var(--mui-palette-primary-contrastText)',
-        '--NavItem-disabled-color': 'var(--mui-palette-neutral-500)',
-        '--NavItem-icon-color': 'var(--mui-palette-neutral-400)',
-        '--NavItem-icon-active-color': 'var(--mui-palette-primary-contrastText)',
-        '--NavItem-icon-disabled-color': 'var(--mui-palette-neutral-600)',
-        bgcolor: 'var(--SideNav-background)',
+        width: collapsed ? 72 : 280,
+        minWidth: collapsed ? 72 : 260,
+        transition: 'width 0.2s',
+        bgcolor: '#f4f6f8',
         color: 'var(--SideNav-color)',
-        display: { xs: 'none', lg: 'flex' },
-        flexDirection: 'column',
-        height: '100%',
-        left: 0,
-        maxWidth: '100%',
+        height: '100vh',
         position: 'fixed',
-        scrollbarWidth: 'none',
+        left: 0,
         top: 0,
-        width: 'var(--SideNav-width)',
-        zIndex: 'var(--SideNav-zIndex)',
-        '&::-webkit-scrollbar': { display: 'none' },
+        display: 'flex',
+        flexDirection: 'column',
+        zIndex: 1200,
       }}
+      ref={navRef}
     >
-      <Stack spacing={2} sx={{ p: 3 }}>
-        <Box component={RouterLink} href={paths.home} sx={{ display: 'inline-flex' }}>
-          <Logo color="light" height={32} width={122} />
-        </Box>
-        {/* <Box
-          sx={{
-            alignItems: 'center',
-            backgroundColor: 'var(--mui-palette-neutral-950)',
-            border: '1px solid var(--mui-palette-neutral-700)',
-            borderRadius: '12px',
-            cursor: 'pointer',
-            display: 'flex',
-            p: '4px 12px',
-          }}
-        >
-          <Box sx={{ flex: '1 1 auto' }}>
-            <Typography color="var(--mui-palette-neutral-400)" variant="body2">
-              Workspace
+      {/* Logo y botón */}
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: collapsed ? 'center' : 'space-between',
+          height: 64,
+          px: 2,
+          py: 1,
+        }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {/* <img src="/logo-tair.png" alt="Logo" style={{ width: 40, height: 40 }} /> */}
+          {!collapsed && (
+            <Typography variant="h6" sx={{ ml: 1 }}>
+              Gestión de Neumáticos
             </Typography>
-            <Typography color="inherit" variant="subtitle1">
-              Devias
-            </Typography>
-          </Box>
-          <CaretUpDownIcon />
-        </Box> */}
-      </Stack>
-      <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
-      <Box component="nav" sx={{ flex: '1 1 auto', p: '12px' }}>
-        {renderNavItems({ pathname, items: navItems })}
-      </Box>
-      <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
-      {/* <Stack spacing={2} sx={{ p: '12px' }}>
-        <div>
-          <Typography color="var(--mui-palette-neutral-100)" variant="subtitle2">
-            Nee more features?
-          </Typography>
-          <Typography color="var(--mui-palette-neutral-400)" variant="body2">
-            Check out our Pro solution template.
-          </Typography>
-        </div>
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Box
-            component="img"
-            alt="Pro version"
-            src="/assets/devias-kit-pro.png"
-            sx={{ height: 'auto', width: '160px' }}
-          />
+          )}
         </Box>
         <Button
-          component="a"
-          endIcon={<ArrowSquareUpRightIcon fontSize="var(--icon-fontSize-md)" />}
-          fullWidth
-          href="https://material-kit-pro-react.devias.io/"
-          sx={{ mt: 2 }}
-          target="_blank"
-          variant="contained"
+          onClick={() => setCollapsed((prev) => !prev)}
+          sx={{
+            minWidth: 0,
+            width: 32,
+            height: 32,
+            ml: collapsed ? 0 : 1,
+            borderRadius: '50%',
+            p: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
         >
-          Pro version
+          {collapsed ? <CaretRight size={20} /> : <CaretLeft size={20} />}
         </Button>
-      </Stack> */}
+      </Box>
+      <Divider />
+      {/* Menú */}
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 2 }}>
+        <Box component="nav" sx={{ width: '100%' }}>
+          {renderNavItems({ pathname, items: navItems, collapsed })}
+        </Box>
+      </Box>
+      <Divider />
     </Box>
   );
 }
 
-function renderNavItems({ items = [], pathname }: { items?: NavItemConfig[]; pathname: string }): React.JSX.Element {
+function renderNavItems({
+  items = [],
+  pathname,
+  collapsed = false,
+}: {
+  items?: NavItemConfig[];
+  pathname: string;
+  collapsed?: boolean;
+}): React.JSX.Element {
   const children = items.reduce((acc: React.ReactNode[], curr: NavItemConfig): React.ReactNode[] => {
     const { key, ...item } = curr;
 
-    acc.push(<NavItem key={key} pathname={pathname} {...item} />);
+    acc.push(<NavItem key={key} pathname={pathname} collapsed={collapsed} {...item} />);
 
     return acc;
   }, []);
@@ -132,9 +129,19 @@ function renderNavItems({ items = [], pathname }: { items?: NavItemConfig[]; pat
 
 interface NavItemProps extends Omit<NavItemConfig, 'items'> {
   pathname: string;
+  collapsed?: boolean;
 }
 
-function NavItem({ disabled, external, href, icon, matcher, pathname, title }: NavItemProps): React.JSX.Element {
+function NavItem({
+  disabled,
+  external,
+  href,
+  icon,
+  matcher,
+  pathname,
+  title,
+  collapsed,
+}: NavItemProps): React.JSX.Element {
   const active = isNavItemActive({ disabled, external, href, matcher, pathname });
   const Icon = icon ? navIcons[icon] : null;
 
@@ -157,10 +164,11 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title }: N
           display: 'flex',
           flex: '0 0 auto',
           gap: 1,
-          p: '6px 16px',
+          p: collapsed ? '6px' : '6px 16px',
           position: 'relative',
           textDecoration: 'none',
           whiteSpace: 'nowrap',
+          justifyContent: collapsed ? 'center' : 'flex-start',
           ...(disabled && {
             bgcolor: 'var(--NavItem-disabled-background)',
             color: 'var(--NavItem-disabled-color)',
@@ -178,14 +186,17 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title }: N
             />
           ) : null}
         </Box>
-        <Box sx={{ flex: '1 1 auto' }}>
-          <Typography
-            component="span"
-            sx={{ color: 'inherit', fontSize: '0.875rem', fontWeight: 500, lineHeight: '28px' }}
-          >
-            {title}
-          </Typography>
-        </Box>
+        {/* Solo muestra el nombre si NO está colapsado */}
+        {!collapsed && (
+          <Box sx={{ flex: '1 1 auto' }}>
+            <Typography
+              component="span"
+              sx={{ color: 'inherit', fontSize: '0.875rem', fontWeight: 500, lineHeight: '28px' }}
+            >
+              {title}
+            </Typography>
+          </Box>
+        )}
       </Box>
     </li>
   );
