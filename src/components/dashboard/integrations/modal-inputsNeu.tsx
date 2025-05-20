@@ -1,5 +1,7 @@
 import React from 'react';
-import { Dialog, DialogContent, TextField, Button } from '@mui/material';
+import { Dialog, DialogContent, TextField, Button, Stack, DialogTitle } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 
 interface ModalInputsNeuProps {
     open: boolean;
@@ -12,41 +14,44 @@ const ModalInputsNeu: React.FC<ModalInputsNeuProps> = ({ open, onClose, onSubmit
     const [remanente, setRemanente] = React.useState<number>(0);
     const [presionAire, setPresionAire] = React.useState<number>(0);
 
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
     const handleSubmit = () => {
         onSubmit({ kilometraje, remanente, presionAire });
         onClose();
     };
 
     return (
-        <Dialog open={open} onClose={onClose}>
+        <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth fullScreen={fullScreen}>
+            <DialogTitle>Ingresar datos</DialogTitle>
             <DialogContent>
-                <TextField
-                    label="Kilometraje"
-                    type="number"
-                    value={kilometraje}
-                    onChange={(e) => setKilometraje(Number(e.target.value))}
-                    fullWidth
-                    margin="normal"
-                />
-                <TextField
-                    label="Remanente"
-                    type="number"
-                    value={remanente}
-                    onChange={(e) => setRemanente(Number(e.target.value))}
-                    fullWidth
-                    margin="normal"
-                />
-                <TextField
-                    label="Presión de Aire"
-                    type="number"
-                    value={presionAire}
-                    onChange={(e) => setPresionAire(Number(e.target.value))}
-                    fullWidth
-                    margin="normal"
-                />
-                <Button onClick={handleSubmit} variant="contained" color="primary">
-                    Submit
-                </Button>
+                <Stack spacing={2}>
+                    <TextField
+                        label="Kilometraje"
+                        type="number"
+                        value={kilometraje}
+                        onChange={(e) => setKilometraje(Number(e.target.value))}
+                        fullWidth
+                    />
+                    <TextField
+                        label="Remanente"
+                        type="number"
+                        value={remanente}
+                        onChange={(e) => setRemanente(Number(e.target.value))}
+                        fullWidth
+                    />
+                    <TextField
+                        label="Presión de Aire"
+                        type="number"
+                        value={presionAire}
+                        onChange={(e) => setPresionAire(Number(e.target.value))}
+                        fullWidth
+                    />
+                    <Button onClick={handleSubmit} variant="contained" color="primary" fullWidth>
+                        Guardar
+                    </Button>
+                </Stack>
             </DialogContent>
         </Dialog>
     );

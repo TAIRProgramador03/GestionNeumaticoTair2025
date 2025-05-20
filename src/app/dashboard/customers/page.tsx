@@ -12,7 +12,10 @@ import Typography from '@mui/material/Typography';
 import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
 import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
 import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
+import { ArrowClockwise as RefreshIcon } from '@phosphor-icons/react/dist/ssr/ArrowClockwise';
 import styled from '@emotion/styled';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 
 import { CustomersFilters } from '@/components/dashboard/customer/customers-filters';
 import { CustomersTable } from '@/components/dashboard/customer/customers-table';
@@ -215,6 +218,29 @@ export default function Page(): React.JSX.Element {
   }
 `;
 
+  const handleRefresh = async () => {
+    setCustomers([]); // Limpia la tabla para ver el efecto
+    try {
+      const data = await Neumaticos();
+      setCustomers(data);
+      // Actualiza los contadores:
+      fetch('http://192.168.5.207:3001/api/po-neumaticos/cantidad')
+        .then((res) => res.json())
+        .then(({ cantidad }) => setProjectCount(cantidad));
+      fetch('http://192.168.5.207:3001/api/po-neumaticos/disponibles/cantidad')
+        .then((res) => res.json())
+        .then(({ cantidad }) => setDisponiblesCount(cantidad));
+      fetch('http://192.168.5.207:3001/api/po-neumaticos/asignados/cantidad')
+        .then((res) => res.json())
+        .then(({ cantidad }) => setAsignadosCount(cantidad));
+    } catch (error) {
+      alert('Error al refrescar los datos');
+    }
+  };
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <>
       {loading && (
@@ -243,7 +269,12 @@ export default function Page(): React.JSX.Element {
                 setPage(0);
               }}
               placeholder="Buscar neumático..."
-              sx={{ maxWidth: 300, width: '100%' }}
+              sx={{
+                width: {
+                  xs: '100%',   // 100% en pantallas pequeñas
+                  sm: 300       // 300px en pantallas medianas o mayores
+                }
+              }}
             />
           </Box>
           <Box sx={{ display: 'flex', gap: 2, mt: { xs: 2, md: 0 } }}>
@@ -260,22 +291,37 @@ export default function Page(): React.JSX.Element {
               onClick={() => inputFileRef.current?.click()}
               disabled={loading}
             >
-              {loading ? "Cargando..." : "Importar"}
+              {isMobile ? null : (loading ? "Cargando..." : "Importar")}
             </Button>
-            <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
-              Exportar
+            <Button
+              color="inherit"
+              startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}
+            >
+              {isMobile ? null : "Exportar"}
             </Button>
-            <Button startIcon={<PlusIcon fontSize="var(--icon-fontSize-md)" />} variant="contained">
+            <Button
+              color="inherit"
+              startIcon={<RefreshIcon fontSize="var(--icon-fontSize-md)" />}
+              onClick={handleRefresh}
+              disabled={loading}
+            >
+              {isMobile ? null : "Refrescar"}
+            </Button>
+            <Button
+              startIcon={<PlusIcon fontSize="var(--icon-fontSize-md)" />}
+              variant="contained"
+            >
               Agregar
             </Button>
           </Box>
         </Stack>
         <CustomersFilters
+          key={projectCount + '-' + disponiblesCount + '-' + asignadosCount + '-' + Date.now()}
           projectCount={projectCount}
           disponiblesCount={disponiblesCount}
           asignadosCount={asignadosCount}
         />
-        
+
 
         <CustomersTable
           count={filteredCustomers.length}

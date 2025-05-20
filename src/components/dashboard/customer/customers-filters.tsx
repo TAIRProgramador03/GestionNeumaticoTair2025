@@ -6,6 +6,7 @@ import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/di
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
 
 
 export interface CustomersFiltersProps {
@@ -95,11 +96,12 @@ export function CustomersFilters({
 
   return (
     <Card sx={{ p: 2 }}>
-      <Stack direction="row" spacing={2} alignItems="center">
-        <Stack direction="column" alignItems="center" spacing={1}>
+      <Grid container spacing={2} justifyContent="center" alignItems="center">
+        <Grid item xs={6} sm={4}>
           <Box
             sx={{
-              width: 150,
+              width: '100%',
+              minWidth: 120,
               height: 80,
               bgcolor: '#e3f2fd',
               borderRadius: '17px',
@@ -114,14 +116,15 @@ export function CustomersFilters({
           >
             {displayCount}
           </Box>
-          <Typography variant="body2" color="text.secondary">
+          <Typography align="center" variant="body2" color="text.secondary">
             Total neumáticos
           </Typography>
-        </Stack>
-        <Stack direction="column" alignItems="center" spacing={1}>
+        </Grid>
+        <Grid item xs={6} sm={4}>
           <Box
             sx={{
-              width: 150,
+              width: '100%',
+              minWidth: 120,
               height: 80,
               bgcolor: '#e8f5e9',
               borderRadius: '17px',
@@ -136,14 +139,15 @@ export function CustomersFilters({
           >
             {displayDisponibles}
           </Box>
-          <Typography variant="body2" color="text.secondary">
+          <Typography align="center" variant="body2" color="text.secondary">
             Disponibles
           </Typography>
-        </Stack>
-        <Stack direction="column" alignItems="center" spacing={1}>
+        </Grid>
+        <Grid item xs={12} sm={4}>
           <Box
             sx={{
-              width: 150,
+              width: '100%',
+              minWidth: 120,
               height: 80,
               bgcolor: '#fff3e0',
               borderRadius: '17px',
@@ -158,12 +162,11 @@ export function CustomersFilters({
           >
             {displayAsignados}
           </Box>
-          <Typography variant="body2" color="text.secondary">
+          <Typography align="center" variant="body2" color="text.secondary">
             Asignados
           </Typography>
-        </Stack>
-        {/* ...otros rectángulos si los necesitas... */}
-      </Stack>
+        </Grid>
+      </Grid>
     </Card>
   );
 }
